@@ -24,23 +24,27 @@
 %%%
 %%% @end
 %%%-----------------------------------------------------------------------------
--module(emqttd_plugin_kafka_bridge_app).
+-module(emqttd_plugin_kafka_bridge_sup).
 
--behaviour(application).
+-behaviour(supervisor).
 
--emqx_plugin(?MODULE).
-%% Application callbacks
--export([start/2, stop/1]).
+%% API
+-export([start_link/0]).
+
+%% Supervisor callbacks
+-export([init/1]).
 
 %% ===================================================================
-%% Application callbacks
+%% API functions
 %% ===================================================================
 
-start(_StartType, _StartArgs) ->
-    {ok, Sup} = emqttd_plugin_kafka_bridge_sup:start_link(),
-    emqttd_plugin_kafka_bridge:load(application:get_all_env()),
-    {ok, Sup}.
+start_link() ->
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-stop(_State) ->
-    emqttd_plugin_kafka_bridge:unload().
+%% ===================================================================
+%% Supervisor callbacks
+%% ===================================================================
+
+init([]) ->
+    {ok, { {one_for_one, 5, 10}, []} }.
 
