@@ -1,0 +1,21 @@
+addons:
+  postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-9.6-postgis-2.3
+      - postgresql-contrib-9.6
+env:
+  - PATH=".:/usr/lib/postgresql/9.6/bin:$PATH"
+install: "true"
+language: erlang
+otp_release:
+  - 21.0
+  - 20.3
+  - 19.3
+  - 18.3
+  - 17.5
+  - R16B03-1
+script:
+  - make elvis
+  - make test
+  - make dialyzer
