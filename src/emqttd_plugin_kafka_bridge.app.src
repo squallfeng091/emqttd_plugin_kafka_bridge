@@ -2,12 +2,13 @@
  [
   {description, "emqttd_plugin_kafka_bridge"},
   {vsn, "1.0.0"},
-  {registered, []},
+  {registered, [emqttd_plugin_kafka_bridge_sup]},
   {applications, [
                   kernel,
                   stdlib,
                   ekaf
                  ]},
   {mod, { emqttd_plugin_kafka_bridge_app, []}},
-  {env, []}
+  {env, []},
+{maintainers, ["EMQ X Team <contact@emqx.io>"]}
  ]}.

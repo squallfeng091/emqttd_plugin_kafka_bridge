@@ -27,7 +27,7 @@
 -module(emqttd_plugin_kafka_bridge).
 
 
--include("../../emqx-4.2.0/include/emqx.hrl").
+-include("../../emqx/include/emqx.hrl").
 
 %%-include("../../../include/emqttd.hrl").
 %%-include("../../../include/emqttd_protocol.hrl").
