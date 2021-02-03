@@ -45,7 +45,7 @@
 
 -export([on_message_publish/2, on_message_delivered/3, on_message_acked/3]).
 
--record(struct, {lst = []}).
+%%-record(struct, {lst = []}).
 
 %% Called when the plugin application start
 load(Env) ->
@@ -67,7 +67,7 @@ load(Env) ->
 %%  emqx:hook('session.terminated', {?MODULE, on_session_terminated, [Env]}),
   emqx:hook('message.publish', {?MODULE, on_message_publish, [Env]}),
   emqx:hook('message.delivered', {?MODULE, on_message_delivered, [Env]}),
-  emqx:hook('message.acked', {?MODULE, on_message_acked, [Env]}),
+  emqx:hook('message.acked', {?MODULE, on_message_acked, [Env]}).
 %%  emqx:hook('message.dropped', {?MODULE, on_message_dropped, [Env]}).
 
 
@@ -98,7 +98,7 @@ on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
 %%-----------client disconnect start---------------------------------%%
 
 on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInfo, _Env) ->
-  io:format("client ~s disconnected, reason: ~w~n", [ClientId, ReasonCode, ClientInfo, ConnInfo]),
+  io:format("Client(~s) disconnected due to ~p, ClientInfo:~n~p~n, ConnInfo:~n~p~n", [ClientId, ReasonCode, ClientInfo, ConnInfo]),
 
   Json = mochijson2:encode([
     {type, <<"disconnected">>},
@@ -282,12 +282,12 @@ ekaf_init(_Env) ->
 
 %% Called when the plugin application stop
 unload() ->
-  emqx:unhook('client.connect',      {?MODULE, on_client_connect}),
-  emqx:unhook('client.connected',    {?MODULE, on_client_connected}),
+  emqx:unhook('client.connect', {?MODULE, on_client_connect}),
+  emqx:unhook('client.connected', {?MODULE, on_client_connected}),
   emqx:unhook('client.disconnected', {?MODULE, on_client_disconnected}),
-  emqx:unhook('client.subscribe',    {?MODULE, on_client_subscribe}),
-  emqx:unhook('client.unsubscribe',  {?MODULE, on_client_unsubscribe}),
-  emqx:unhook('message.publish',     {?MODULE, on_message_publish}),
-  emqx:unhook('message.delivered',   {?MODULE, on_message_delivered}),
-  emqx:unhook('message.acked',       {?MODULE, on_message_acked}),
+  emqx:unhook('client.subscribe', {?MODULE, on_client_subscribe}),
+  emqx:unhook('client.unsubscribe', {?MODULE, on_client_unsubscribe}),
+  emqx:unhook('message.publish', {?MODULE, on_message_publish}),
+  emqx:unhook('message.delivered', {?MODULE, on_message_delivered}),
+  emqx:unhook('message.acked', {?MODULE, on_message_acked}).
 
