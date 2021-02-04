@@ -262,16 +262,18 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 %% ===================================================================
 
 ekaf_init(_Env) ->
-  {ok, Kafka_Env} = application:get_env(?APP, server),
-  Host = proplists:get_value(host, Kafka_Env),
-  Port = proplists:get_value(port, Kafka_Env),
+  {ok, Kafka} = application:get_env(?APP, kafka),
+  Host = proplists:get_value(bootstrap_ip, Kafka),
+  Port = proplists:get_value(bootstrap_port, Kafka),
+  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
+  PartitionStrategy = proplists:get_value(partition_strategy, Kafka),
   Broker = {Host, Port},
   %Broker = {"192.168.52.130", 9092},
-  Topic = proplists:get_value(topic, Kafka_Env),
+  Topic = proplists:get_value(topic, Kafka),
   %Topic = "test-topic",
 
-  application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
-  application:set_env(ekaf, ekaf_bootstrap_broker, Broker),
+  application:set_env(ekaf, ekaf_partition_strategy, PartitionStrategy),
+  application:set_env(ekaf, ekaf_bootstrap_broker, BootstrapBroker),
   application:set_env(ekaf, ekaf_bootstrap_topics, list_to_binary(Topic)),
   %%设置数据上报间隔，ekaf默认是数据达到1000条或者5秒，触发上报
   application:set_env(ekaf, ekaf_buffer_ttl, 100),
@@ -306,7 +308,7 @@ ekaf_send(Message, _Env) ->
       {username, Username},
       {topic, Topic},
       {payload, Payload},
-      {qos, Qos},
+      {qos, Qos}
     ]},
     {cluster_node, node()},
     {ts, emqttd_time:now_ms()}
@@ -316,9 +318,7 @@ ekaf_send(Message, _Env) ->
   KafkaTopic = get_topic(),
   ekaf:produce_sync_batched(KafkaTopic, list_to_binary(Json)).
 
-get_form_clientid({ClientId, Username}) -> ClientId;
 get_form_clientid(From) -> From.
-get_form_username({ClientId, Username}) -> Username;
 get_form_username(From) -> From.
 
 get_topic() ->
