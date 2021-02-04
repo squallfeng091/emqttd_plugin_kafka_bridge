@@ -1,0 +1,14 @@
+{application, emqx_plugin_kafka_bridge,
+ [
+  {description, "emqx_plugin_kafka_bridge"},
+  {vsn, "git"},
+  {registered, [emqx_plugin_kafka_bridge_sup]},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  ekaf
+                 ]},
+  {mod, { emqx_plugin_kafka_bridge_app, []}},
+  {env, []},
+{maintainers, ["EMQ X Team <contact@emqx.io>"]}
+ ]}.

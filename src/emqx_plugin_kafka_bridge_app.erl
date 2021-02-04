@@ -24,7 +24,7 @@
 %%%
 %%% @end
 %%%-----------------------------------------------------------------------------
--module(emqttd_plugin_kafka_bridge_app).
+-module(emqx_plugin_kafka_bridge_app).
 
 -behaviour(application).
 
@@ -37,10 +37,10 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    {ok, Sup} = emqttd_plugin_kafka_bridge_sup:start_link(),
-    emqttd_plugin_kafka_bridge:load(application:get_all_env()),
+    {ok, Sup} = emqx_plugin_kafka_bridge_sup:start_link(),
+    emqx_plugin_kafka_bridge:load(application:get_all_env()),
     {ok, Sup}.
 
 stop(_State) ->
-    emqttd_plugin_kafka_bridge:unload().
+    emqx_plugin_kafka_bridge:unload().
 
