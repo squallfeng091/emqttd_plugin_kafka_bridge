@@ -267,7 +267,7 @@ ekaf_init(_Env) ->
   Port = proplists:get_value(bootstrap_port, Kafka),
   BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
   PartitionStrategy = proplists:get_value(partition_strategy, Kafka),
-  Broker = {Host, Port},
+%%  Broker = {Host, Port},
   %Broker = {"192.168.52.130", 9092},
   Topic = proplists:get_value(topic, Kafka),
   %Topic = "test-topic",
@@ -288,42 +288,42 @@ ekaf_init(_Env) ->
 %io:format("send : ~w.~n",[ekaf:produce_async_batched(list_to_binary(Topic), list_to_binary(Json))]).
 
 
-ekaf_send(Message, _Env) ->
-  From = Message#message.from,
-  Topic = Message#message.topic,
-  Payload = Message#message.payload,
-  Qos = Message#message.qos,
-  ClientId = get_form_clientid(From),
-  Username = get_form_username(From),
-  io:format("message receive : ~n",[]),
-  io:format("From : ~w~n",[From]),
-  io:format("Topic : ~w~n",[Topic]),
-  io:format("Payload : ~w~n",[Payload]),
-  io:format("Qos : ~w~n",[Qos]),
-  io:format("ClientId : ~w~n",[ClientId]),
-  io:format("Username : ~w~n",[Username]),
-  Str = [
-    {client_id, ClientId},
-    {message, [
-      {username, Username},
-      {topic, Topic},
-      {payload, Payload},
-      {qos, Qos}
-    ]},
-    {cluster_node, node()},
-    {ts, emqttd_time:now_ms()}
-  ],
-  io:format("Str : ~w.~n", [Str]),
-  Json = mochijson2:encode(Str),
-  KafkaTopic = get_topic(),
-  ekaf:produce_sync_batched(KafkaTopic, list_to_binary(Json)).
+%%ekaf_send(Message, _Env) ->
+%%  From = Message#message.from,
+%%  Topic = Message#message.topic,
+%%  Payload = Message#message.payload,
+%%  Qos = Message#message.qos,
+%%  ClientId = get_form_clientid(From),
+%%  Username = get_form_username(From),
+%%  io:format("message receive : ~n",[]),
+%%  io:format("From : ~w~n",[From]),
+%%  io:format("Topic : ~w~n",[Topic]),
+%%  io:format("Payload : ~w~n",[Payload]),
+%%  io:format("Qos : ~w~n",[Qos]),
+%%  io:format("ClientId : ~w~n",[ClientId]),
+%%  io:format("Username : ~w~n",[Username]),
+%%  Str = [
+%%    {client_id, ClientId},
+%%    {message, [
+%%      {username, Username},
+%%      {topic, Topic},
+%%      {payload, Payload},
+%%      {qos, Qos}
+%%    ]},
+%%    {cluster_node, node()},
+%%    {ts, emqttd_time:now_ms()}
+%%  ],
+%%  io:format("Str : ~w.~n", [Str]),
+%%  Json = mochijson2:encode(Str),
+%%  KafkaTopic = get_topic(),
+%%  ekaf:produce_sync_batched(KafkaTopic, list_to_binary(Json)).
 
-get_form_clientid(From) -> From.
-get_form_username(From) -> From.
+%%get_form_clientid(From) -> From.
+%%get_form_username(From) -> From.
 
-get_topic() ->
-  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
-  Topic.
+%%get_topic() ->
+%%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
+%%  Topic.
 
 
 %% Called when the plugin application stop
