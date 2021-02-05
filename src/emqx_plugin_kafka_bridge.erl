@@ -265,16 +265,15 @@ ekaf_init(_Env) ->
   {ok, Kafka} = application:get_env(?APP, kafka),
 %%  Host = proplists:get_value(bootstrap_ip, Kafka),
 %%  Port = proplists:get_value(bootstrap_port, Kafka),
-  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
-  PartitionStrategy = proplists:get_value(partition_strategy, Kafka),
+%%  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
+%%  PartitionStrategy = proplists:get_value(partition_strategy, Kafka),
 %%  Broker = {Host, Port},
   %Broker = {"192.168.52.130", 9092},
-  Topic = proplists:get_value(topic, Kafka),
+%%  Topic = proplists:get_value(topic, Kafka),
   %Topic = "test-topic",
-
-  application:set_env(ekaf, ekaf_partition_strategy, PartitionStrategy),
-  application:set_env(ekaf, ekaf_bootstrap_broker, BootstrapBroker),
-  application:set_env(ekaf, ekaf_bootstrap_topics, list_to_binary(Topic)),
+  application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
+  application:set_env(ekaf, ekaf_bootstrap_broker, {"192.168.52.130", 9092}),
+  application:set_env(ekaf, ekaf_bootstrap_topics, "broker_message"),
   %%设置数据上报间隔，ekaf默认是数据达到1000条或者5秒，触发上报
   application:set_env(ekaf, ekaf_buffer_ttl, 100),
 
