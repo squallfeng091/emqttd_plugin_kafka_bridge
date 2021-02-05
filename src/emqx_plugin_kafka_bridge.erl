@@ -262,7 +262,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 %% ===================================================================
 
 ekaf_init(_Env) ->
-  {ok, Kafka} = application:get_env(?APP, kafka),
+%%  {ok, Kafka} = application:get_env(?APP, kafka),
 %%  Host = proplists:get_value(bootstrap_ip, Kafka),
 %%  Port = proplists:get_value(bootstrap_port, Kafka),
 %%  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
