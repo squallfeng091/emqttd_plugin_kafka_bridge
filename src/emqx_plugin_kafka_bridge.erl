@@ -262,15 +262,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 %% ===================================================================
 
 ekaf_init(_Env) ->
-%%  {ok, Kafka} = application:get_env(?APP, kafka),
-%%  Host = proplists:get_value(bootstrap_ip, Kafka),
-%%  Port = proplists:get_value(bootstrap_port, Kafka),
-%%  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
-%%  PartitionStrategy = proplists:get_value(partition_strategy, Kafka),
-%%  Broker = {Host, Port},
-  %Broker = {"192.168.52.130", 9092},
-%%  Topic = proplists:get_value(topic, Kafka),
-  %Topic = "test-topic",
+
   application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
   application:set_env(ekaf, ekaf_bootstrap_broker, {"192.168.52.130", 9092}),
   application:set_env(ekaf, ekaf_bootstrap_topics, "broker_message"),
