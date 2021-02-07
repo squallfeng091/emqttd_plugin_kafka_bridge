@@ -130,7 +130,7 @@ on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInf
 %%%
 %%% @end
 %%%-----------------------------------------------------------------------------
-    -module(emqx_plugin_kafka_bridge).
+-module(emqx_plugin_kafka_bridge).
 
 
 -include_lib("emqx/include/emqx.hrl").
