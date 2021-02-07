@@ -77,7 +77,7 @@ load(Env) ->
 on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
     [ClientId, ClientInfo, ConnInfo]),
-  time =erlang:now(),
+  time =os:timestamp(),
   Json = mochijson2:encode([
     {type, <<"connected">>},
     {client_id, ClientId},
