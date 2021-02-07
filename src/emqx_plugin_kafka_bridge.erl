@@ -322,9 +322,9 @@ ekaf_get_topic() ->
 
 produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
-  io:format("~s~n",[emqx_json:safe_encode(Message)]),
+  io:format("~w~n",[emqx_json:safe_encode(Message)]),
 
-  io:format("~s~n",[jiffy:decode(Message)]),
+  io:format("~w~n",[jiffy:decode(Message)]),
 
   {ok, MessageBody} = emqx_json:safe_encode(Message),
 
