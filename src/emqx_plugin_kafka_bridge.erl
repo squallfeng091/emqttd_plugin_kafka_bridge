@@ -77,12 +77,12 @@ load(Env) ->
 on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
     [ClientId, ClientInfo, ConnInfo]),
-
+  time =erlang:now(),
   Json = mochijson2:encode([
     {type, <<"connected">>},
     {client_id, ClientId},
     {cluster_node, node()},
-    {ts, erlang:now()}
+    {ts,time}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
