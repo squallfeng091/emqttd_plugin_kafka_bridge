@@ -40,7 +40,8 @@
   , on_client_connected/3
   , on_client_disconnected/4
   , on_client_subscribe/4
-  , on_client_unsubscribe/4]).
+  , on_client_unsubscribe/4
+  , safe_encode/1]).
 
 -define(APP, emqx_plugin_kafka_bridge).
 
@@ -315,15 +316,20 @@ ekaf_init(_Env) ->
 %%get_topic() ->
 %%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
 %%  Topic.
+-spec(safe_encode(json_term())
+      -> {ok, json_text()} | {error, Reason :: term()}).
+safe_encode(Term) ->
+  safe_encode(Term, [force_utf8]).
+
 ekaf_get_topic() ->
   {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
   Topic.
 
 produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
-%%  {ok, MessageBody} = emqx_json:safe_encode(Message),
+  {ok, MessageBody} = emqx_json:safe_encode(Message),
 
-  % MessageBody64 = base64:encode_to_string(MessageBody),
+%%  % MessageBody64 = base64:encode_to_string(MessageBody),
   Payload = iolist_to_binary(MessageBody),
   ekaf:produce_async_batched(Topic, Payload).
 
