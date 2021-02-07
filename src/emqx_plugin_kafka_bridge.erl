@@ -332,7 +332,7 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, erlang:timestamp()}
+    {ts, Timestamp}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -358,7 +358,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, erlang:timestamp()}
+    {ts, Timestamp}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
