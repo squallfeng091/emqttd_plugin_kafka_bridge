@@ -200,7 +200,7 @@ on_message_publish(Message, _Env) ->
     {flags, Flags},
     {headers, Headers},
     {cluster_node, node()},
-    {ts, emqx_time:now_to_secs(Timestamp)}
+    {ts, Timestamp}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
