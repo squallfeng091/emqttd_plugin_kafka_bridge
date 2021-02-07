@@ -89,10 +89,10 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
   {ok, ClientInfo}.
 
-on_client_connect(ConnInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
-  io:format("Client(~s) connect, ConnInfo: ~p, ConnInfo: ~p~n",
-    [ClientId, ConnInfo, _Env]),
-  {ok, ConnInfo}.
+on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
+  io:format("Client(~s) connect, ConnInfo: ~p, Props: ~p~n",
+    [ClientId, ConnInfo, Props]),
+  {ok, Props}.
 
 %%-----------client connect end-------------------------------------%%
 
@@ -322,6 +322,8 @@ ekaf_get_topic() ->
 
 produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
+
+
   io:format("~w~n",[emqx_json:safe_encode(Message)]),
 
   io:format("~w~n",[jiffy:decode(Message)]),
