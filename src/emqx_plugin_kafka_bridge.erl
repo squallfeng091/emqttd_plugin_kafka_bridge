@@ -101,15 +101,15 @@ on_client_connect(ConnInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInfo, _Env) ->
   io:format("Client(~s) disconnected due to ~p, ClientInfo:~n~p~n, ConnInfo:~n~p~n", [ClientId, ReasonCode, ClientInfo, ConnInfo]),
 
-  Json = mochijson2:encode([
+  Json = [
     {type, <<"disconnected">>},
     {client_id, ClientId},
     {reason, ReasonCode},
     {cluster_node, node()},
     {ts, erlang:timestamp()}
-  ]),
+  ],
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
+  produce_kafka_payload(Json),
 
   ok.
 
@@ -190,7 +190,7 @@ on_message_publish(Message, _Env) ->
   Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
 
-  Json = mochijson2:encode([
+  Json = [
     {id, Id},
     {type, <<"published">>},
     {client_id, From},
@@ -201,10 +201,10 @@ on_message_publish(Message, _Env) ->
     {headers, Headers},
     {cluster_node, node()},
     {ts, Timestamp}
-  ]),
+  ],
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
-
+  produce_kafka_payload(Json),
+%%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
   {ok, Message}.
 
 %%-----------message delivered start--------------------------------------%%
@@ -315,7 +315,17 @@ ekaf_init(_Env) ->
 %%get_topic() ->
 %%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
 %%  Topic.
+ekaf_get_topic() ->
+  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
+  Topic.
 
+produce_kafka_payload(Message) ->
+  Topic = ekaf_get_topic(),
+  {ok, MessageBody} = emqx_json:safe_encode(Message),
+
+  % MessageBody64 = base64:encode_to_string(MessageBody),
+  Payload = iolist_to_binary(MessageBody),
+  ekaf:produce_async_batched(Topic, Payload).
 
 %% Called when the plugin application stop
 unload() ->
