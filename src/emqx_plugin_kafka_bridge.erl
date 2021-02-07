@@ -80,8 +80,8 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
   Json = mochijson2:encode([
     {type, <<"connected">>},
-    {client_id, ClientId},
-    {cluster_node, node()},
+    {client_id, "ClientId"},
+    {cluster_node, "1ddd"},
     {ts, erlang:timestamp()}
   ]),
 
