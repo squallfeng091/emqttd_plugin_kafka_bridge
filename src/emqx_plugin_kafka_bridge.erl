@@ -82,7 +82,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     {type, <<"connected">>},
     {client_id, ClientId},
     {cluster_node, node()},
-    {ts, emqx_time:now_to_secs()}
+    {ts, erlang:now()}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -225,7 +225,7 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, emqx_time:now_to_secs(Timestamp)}
+    {ts, Timestamp}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -251,7 +251,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, emqx_time:now_to_secs(Timestamp)}
+    {ts, Timestamp}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
