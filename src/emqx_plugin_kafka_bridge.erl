@@ -40,7 +40,8 @@
   , on_client_connected/3
   , on_client_disconnected/4
   , on_client_subscribe/4
-  , on_client_unsubscribe/4]).
+  , on_client_unsubscribe/4
+  , now_to_secs/1]).
 
 -define(APP, emqx_plugin_kafka_bridge).
 
@@ -106,7 +107,7 @@ on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInf
     {client_id, ClientId},
     {reason, ReasonCode},
     {cluster_node, node()},
-    {ts, emqx_time:now_to_secs()}
+    {ts, now_to_secs(erlang:timestamp())}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -135,7 +136,7 @@ on_client_subscribe(#{clientid := ClientId}, _Properties, TopicTable, _Env) ->
         {client_id, ClientId},
         {topic, lists:last(Key)},
         {cluster_node, node()},
-        {ts, emqttd_time:now_to_secs()}
+        {ts, now_to_secs(erlang:timestamp())}
       ]),
       ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json));
     _ ->
@@ -162,7 +163,7 @@ on_client_unsubscribe(#{clientid := ClientId}, _Properties, Topics, _Env) ->
     {client_id, ClientId},
     {topic, lists:last(Topics)},
     {cluster_node, node()},
-    {ts, emqttd_time:now_to_secs()}
+    {ts, now_to_secs(erlang:timestamp())}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -190,6 +191,7 @@ on_message_publish(Message, _Env) ->
   Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
 
+  io:format("test tes tes t :~s",[now_to_secs(Timestamp)]),
   Json = mochijson2:encode([
     {id, Id},
     {type, <<"published">>},
@@ -200,7 +202,7 @@ on_message_publish(Message, _Env) ->
     {flags, Flags},
     {headers, Headers},
     {cluster_node, node()},
-    {ts, Timestamp}
+    {ts,now_to_secs(erlang:timestamp())}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -225,7 +227,7 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, Timestamp}
+    {ts, now_to_secs(Timestamp)}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -251,7 +253,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, Timestamp}
+    {ts, now_to_secs(Timestamp)}
   ]),
 
   ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
@@ -318,6 +320,9 @@ ekaf_init(_Env) ->
 
 
 %% Called when the plugin application stop
+-spec(now_to_secs(erlang:timestamp()) -> pos_integer()).
+now_to_secs({MegaSecs, Secs, _MicroSecs}) ->
+  MegaSecs * 1000000 + Secs.
 unload() ->
   emqx:unhook('client.connect', {?MODULE, on_client_connect}),
   emqx:unhook('client.connected', {?MODULE, on_client_connected}),
