@@ -89,10 +89,10 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
   {ok, ClientInfo}.
 
-on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
-  io:format("Client(~s) connect, ConnInfo: ~p, Props: ~p~n",
-    [ClientId, ConnInfo, Props]),
-  {ok, Props}.
+on_client_connect(ConnInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
+  io:format("Client(~s) connect, ConnInfo: ~p, ConnInfo: ~p~n",
+    [ClientId, ConnInfo, _Env]),
+  {ok, ConnInfo}.
 
 %%-----------client connect end-------------------------------------%%
 
