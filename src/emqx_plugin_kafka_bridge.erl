@@ -79,9 +79,9 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     [ClientId, ClientInfo, ConnInfo]),
 
   Json = [
-    {<<type>>, <<"connected">>},
-    {<<client_id>>, <<"ClientId">>},
-    {<<cluster_node>>, <<"1ddd">>}
+    {<<"type">>, <<"connected">>},
+    {<<"client_id">>, <<"ClientId">>},
+    {<<"msg">>, <<"connected OK!">>}
 %%    {ts, erlang:timestamp()}
   ],
 
