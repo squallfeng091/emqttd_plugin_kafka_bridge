@@ -85,8 +85,9 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     {ts, erlang:timestamp()}
   ]),
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
+%%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
 
+  produce_kafka_payload(Json),
   {ok, ClientInfo}.
 
 on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
@@ -179,7 +180,7 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
   {ok, Message};
 
 on_message_publish(Message, _Env) ->
-%%  io:format("publish ~s~n", [emqx_message:format(Message)]),
+  io:format("publish ~s~n", [emqx_message:format(Message)]),
 
   From = Message#message.from,
   Id = Message#message.id,
