@@ -324,7 +324,7 @@ ekaf_get_topic() ->
   Topic.
 
 produce_kafka_payload(Message) ->
-  Topic = ekaf_get_topic(),
+  Topic = <<"ekaf_message">>,
 
   io:format("squallfeng test :~w~n",[Message]),
 %%  io:format("~w~n",[jiffy:decode(Message)]),
