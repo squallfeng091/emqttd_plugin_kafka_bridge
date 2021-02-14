@@ -84,7 +84,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     {<<"type">>, <<"connected">>},
     {<<"client_id">>, <<"ClientId">>},
     {<<"msg">>, <<"connected OK!">>},
-    {<<"ts">>, erlang:timestamp()}
+    {<<"ts">>, <<erlang:timestamp()>>}
   ]),
 %%  [
 %%    {type, <<"delivered">>},
