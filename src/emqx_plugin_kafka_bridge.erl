@@ -78,6 +78,9 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
     [ClientId, ClientInfo, ConnInfo]),
 
+
+  io:format("mochijson ~s~n",mochijson2:decode(<<"[1,2,3]">>)),
+
   Json =
     mochijson2:encode([
     {<<"type">>, <<"connected">>},
