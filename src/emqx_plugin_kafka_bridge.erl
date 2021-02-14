@@ -319,9 +319,9 @@ ekaf_init(_Env) ->
 %%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
 %%  Topic.
 
-ekaf_get_topic() ->
-  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
-  Topic.
+%%ekaf_get_topic() ->
+%%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
+%%  Topic.
 
 produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
