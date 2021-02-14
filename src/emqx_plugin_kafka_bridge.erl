@@ -324,7 +324,7 @@ produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
 
 
-  io:format("~w~n",[emqx_json:safe_encode(Message)]),
+  io:format("Squallfeng TEST~w~n",[emqx_json:safe_encode(Message)]),
 
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 
