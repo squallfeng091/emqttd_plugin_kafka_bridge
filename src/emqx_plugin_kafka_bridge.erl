@@ -79,12 +79,12 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     [ClientId, ClientInfo, ConnInfo]),
 
   Json =
-    [
+    mochijson2:encode([
     {<<"type">>, <<"connected">>},
     {<<"client_id">>, <<"ClientId">>},
     {<<"msg">>, <<"connected OK!">>},
     {<<"ts">>, erlang:timestamp()}
-  ],
+  ]),
 %%  [
 %%    {type, <<"delivered">>},
 %%    {client_id, ClientId},
@@ -339,6 +339,7 @@ produce_kafka_payload(Message) ->
 
   io:format("squallfeng test :~w~n",[Message]),
   io:format("squallfeng test binary :~w~n",[list_to_binary(Message)]),
+  io:format("squallfeng test iolist :~w~n",[iolist_to_binary(Message)]),
 
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
