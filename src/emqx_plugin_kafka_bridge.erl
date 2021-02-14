@@ -326,7 +326,7 @@ ekaf_init(_Env) ->
 produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
 
-  io:format("squallfeng test :~s~n",[Message]),
+  io:format("squallfeng test :~w~n",[Message]),
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
 %%   MessageBody64 = base64:encode_to_string(MessageBody),
