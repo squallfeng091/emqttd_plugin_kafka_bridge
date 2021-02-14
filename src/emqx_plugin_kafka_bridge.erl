@@ -83,8 +83,8 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     mochijson2:encode([
     {type, <<"connected">>},
     {client_id, <<"ClientId">>},
-    {msg, "connected OK!"},
-    {ts, erlang:timestamp()}
+    {msg, <<"connected OK!">>},
+    {ts, emqx_misc:now_to_ms(os:timestamp())}
   ]),
 %%  [
 %%    {type, <<"delivered">>},
@@ -339,8 +339,8 @@ produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
 
   io:format("squallfeng test :~w~n",[Message]),
-  io:format("squallfeng test binary :~w~n",list_to_binary(Message)),
-  io:format("squallfeng test iolist :~w~n",iolist_to_binary(Message)),
+%%  io:format("squallfeng test binary :~w~n",list_to_binary(Message)),
+%%  io:format("squallfeng test iolist :~w~n",iolist_to_binary(Message)),
 
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
