@@ -187,7 +187,7 @@ on_message_publish(Message, _Env) ->
   Payload = Message#message.payload,
   QoS = Message#message.qos,
   Flags = Message#message.flags,
-  Headers = Message#message.headers,
+%%  Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
 
   Json = [
