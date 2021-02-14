@@ -337,7 +337,7 @@ produce_kafka_payload(Message) ->
 %%  Payload = list_to_binary(MessageBody),
   io:format("Squallfeng TEST~s~n",[Message]),
 
-  ekaf:produce_async_batched(Topic, Message).
+  ekaf:produce_async_batched(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]).
 
 %% Called when the plugin application stop
 unload() ->
