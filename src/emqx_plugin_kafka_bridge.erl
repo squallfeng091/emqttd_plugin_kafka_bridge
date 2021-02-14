@@ -326,7 +326,7 @@ produce_kafka_payload(Message) ->
 
   io:format("~w~n",[emqx_json:safe_encode(Message)]),
 
-  io:format("~w~n",[jiffy:decode(Message)]),
+%%  io:format("~w~n",[jiffy:decode(Message)]),
 
   {ok, MessageBody} = emqx_json:safe_encode(Message),
 
