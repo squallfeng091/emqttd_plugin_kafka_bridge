@@ -179,7 +179,7 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
   {ok, Message};
 
 on_message_publish(Message, _Env) ->
-  io:format("publish ~s~n", [emqx_message:format(Message)]),
+%%  io:format("publish ~s~n", [emqx_message:format(Message)]),
 
   From = Message#message.from,
   Id = Message#message.id,
@@ -202,6 +202,8 @@ on_message_publish(Message, _Env) ->
     {cluster_node, node()},
     {ts, Timestamp}
   ],
+
+  io:format("publish ~s~n", Json),
 
   produce_kafka_payload(Json),
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
