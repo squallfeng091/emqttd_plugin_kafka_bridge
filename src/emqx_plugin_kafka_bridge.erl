@@ -78,12 +78,23 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
     [ClientId, ClientInfo, ConnInfo]),
 
-  Json = [
+  Json =
+    [
     {<<"type">>, <<"connected">>},
     {<<"client_id">>, <<"ClientId">>},
-    {<<"msg">>, <<"connected OK!">>}
-%%    {ts, erlang:timestamp()}
+    {<<"msg">>, <<"connected OK!">>},
+    {<<"ts">>, erlang:timestamp()}
   ],
+%%  [
+%%    {type, <<"delivered">>},
+%%    {client_id, ClientId},
+%%    {from, From},
+%%    {topic, Topic},
+%%    {payload, Payload},
+%%    {qos, QoS},
+%%    {cluster_node, node()},
+%%    {ts, Timestamp}
+%%  ],
 
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
 
@@ -327,11 +338,13 @@ produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
 
   io:format("squallfeng test :~w~n",[Message]),
+  io:format("squallfeng test binary :~w~n",[list_to_binary(Message)]),
+
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
 %%   MessageBody64 = base64:encode_to_string(MessageBody),
 %%  Payload = iolist_to_binary(MessageBody),
-  ekaf:produce_async_batched(Topic, Message).
+  ekaf:produce_async(Topic, list_to_binary(Message)).
 
 %% Called when the plugin application stop
 unload() ->
