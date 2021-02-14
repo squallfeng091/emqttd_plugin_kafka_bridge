@@ -78,12 +78,12 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
     [ClientId, ClientInfo, ConnInfo]),
 
-  Json = mochijson2:encode([
+  Json = [
     {type, <<"connected">>},
     {client_id, "ClientId"},
-    {cluster_node, "1ddd"},
-    {ts, erlang:timestamp()}
-  ]),
+    {cluster_node, "1ddd"}
+%%    {ts, erlang:timestamp()}
+  ],
 
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
 
@@ -267,13 +267,13 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 ekaf_init(_Env) ->
 
   application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
-  application:set_env(ekaf, ekaf_bootstrap_broker, {"192.168.52.130", 9092}),
+  application:set_env(ekaf, ekaf_bootstrap_broker, {"192.168.1.106", 9092}),
   application:set_env(ekaf, ekaf_bootstrap_topics, "broker_message"),
   %%设置数据上报间隔，ekaf默认是数据达到1000条或者5秒，触发上报
   application:set_env(ekaf, ekaf_buffer_ttl, 100),
-
+  io:format("Init ekaf with ~s~n", ["==== TTTTTT ====="]),
   {ok, _} = application:ensure_all_started(ekaf).
-%io:format("Init ekaf with ~p~n", [Broker]),
+
 %Json = mochijson2:encode([
 %    {type, <<"connected">>},
 %    {client_id, <<"test-client_id">>},
@@ -327,14 +327,16 @@ produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
 
 
-  io:format("Squallfeng TEST~w~n",[emqx_json:safe_encode(Message)]),
+  io:format("Squallfeng TEST~s~n",["produce_kafka_payload"]),
 
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 
   {ok, MessageBody} = emqx_json:safe_encode(Message),
 
 %%  % MessageBody64 = base64:encode_to_string(MessageBody),
-  Payload = iolist_to_binary(MessageBody),
+  Payload = list_to_binary(MessageBody),
+  io:format("Squallfeng TEST~s~n",[Payload]),
+
   ekaf:produce_async_batched(Topic, Payload).
 
 %% Called when the plugin application stop
