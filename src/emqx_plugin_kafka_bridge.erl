@@ -88,7 +88,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 %%  [
 %%    {type, <<"delivered">>},
 %%    {client_id, ClientId},
-%%    {from, From},
+%%    {from, From}
 %%    {topic, Topic},
 %%    {payload, Payload},
 %%    {qos, QoS},
