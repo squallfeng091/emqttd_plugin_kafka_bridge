@@ -203,7 +203,7 @@ on_message_publish(Message, _Env) ->
     {ts, Timestamp}
   ],
 
-  io:format("publish ~s~n", Json),
+  io:format("publish ~s~n", [Json]),
 
   produce_kafka_payload(Json),
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
