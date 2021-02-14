@@ -79,9 +79,9 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
     [ClientId, ClientInfo, ConnInfo]),
 
   Json = [
-    {type, <<"connected">>},
-    {client_id, "ClientId"},
-    {cluster_node, "1ddd"}
+    {<<type>>, <<"connected">>},
+    {<<client_id>>, <<"ClientId">>},
+    {<<cluster_node>>, <<"1ddd">>}
 %%    {ts, erlang:timestamp()}
   ],
 
@@ -326,12 +326,12 @@ ekaf_init(_Env) ->
 produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
 
-  io:format("squallfeng test :~w~n",[Message]),
+  io:format("squallfeng test :~s~n",[Message]),
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
 %%   MessageBody64 = base64:encode_to_string(MessageBody),
 %%  Payload = iolist_to_binary(MessageBody),
-  ekaf:produce_async_batched(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]).
+  ekaf:produce_async_batched(Topic, Message).
 
 %% Called when the plugin application stop
 unload() ->
