@@ -26,6 +26,8 @@
 %%%-----------------------------------------------------------------------------
 -module(emqx_plugin_kafka_bridge_sup).
 
+-compile(export_all).
+
 -behaviour(supervisor).
 
 %% API
@@ -37,6 +39,10 @@
 %% ===================================================================
 %% API functions
 %% ===================================================================
+
+% 打印数据
+start(Ab) ->
+    io:format("Vsn1 (~p)",[Ab]).
 
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
