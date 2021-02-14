@@ -81,10 +81,10 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
   Json =
     mochijson2:encode([
-    {<<"type">>, <<"connected">>},
-    {<<"client_id">>, <<"ClientId">>},
-    {<<"msg">>, <<"connected OK!">>},
-    {<<"ts">>, <<erlang:timestamp()>>}
+    {type, <<"connected">>},
+    {client_id, <<"ClientId">>},
+    {msg, "connected OK!"},
+    {ts, erlang:timestamp()}
   ]),
 %%  [
 %%    {type, <<"delivered">>},
@@ -119,7 +119,7 @@ on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInf
     {client_id, ClientId},
     {reason, ReasonCode},
     {cluster_node, node()},
-    {ts, erlang:timestamp()}
+    {ts, emqx_misc:now_to_ms(os:timestamp())}
   ],
 
   produce_kafka_payload(Json),
