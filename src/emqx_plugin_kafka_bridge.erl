@@ -326,8 +326,9 @@ ekaf_get_topic() ->
 produce_kafka_payload(Message) ->
   Topic = ekaf_get_topic(),
 
+  io:format("squallfeng test :~w~n",[emqx_json:safe_encode(Message)]),
 %%  io:format("~w~n",[jiffy:decode(Message)]),
-  {ok} = emqx_json:safe_encode(Message),
+%%  {ok, MessageBody} = emqx_json:safe_encode(Message),
 %%   MessageBody64 = base64:encode_to_string(MessageBody),
 %%  Payload = iolist_to_binary(MessageBody),
   ekaf:produce_async_batched(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]).
