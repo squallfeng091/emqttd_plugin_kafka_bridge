@@ -338,8 +338,8 @@ produce_kafka_payload(Message) ->
   Topic = <<"ekaf_message">>,
 
   io:format("squallfeng test :~w~n",[Message]),
-  io:format("squallfeng test binary :~w~n",[list_to_binary(Message)]),
-  io:format("squallfeng test iolist :~w~n",[iolist_to_binary(Message)]),
+  io:format("squallfeng test binary :~w~n",list_to_binary(Message)),
+  io:format("squallfeng test iolist :~w~n",iolist_to_binary(Message)),
 
 %%  io:format("~w~n",[jiffy:decode(Message)]),
 %%  {ok, MessageBody} = emqx_json:safe_encode(Message),
