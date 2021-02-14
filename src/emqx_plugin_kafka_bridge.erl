@@ -198,7 +198,7 @@ on_message_publish(Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {flags, Flags},
-    {headers, Headers},
+%%    {headers, Headers},
     {cluster_node, node()},
     {ts, Timestamp}
   ],
