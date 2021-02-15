@@ -212,7 +212,7 @@ on_message_publish(Message, _Env) ->
     {qos, <<QoS>>},
     {flags, <<Flags>>},
     {headers, <<Headers>>},
-    {cluster_node, <<node()>>},
+    {cluster_node, node()},
     {ts, <<Timestamp>>}
   ]),
 
