@@ -82,7 +82,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   Json =
     mochijson2:encode([
     {type, <<"connected">>},
-    {client_id, <<"ClientId">>},
+    {client_id, <<ClientId>>},
     {msg, <<"connected OK!">>},
     {ts, emqx_misc:now_to_ms(os:timestamp())}
   ]),
@@ -203,7 +203,7 @@ on_message_publish(Message, _Env) ->
   Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
 
-  Json = mochijson2:encode([
+  PublishMsg =[
     {id, <<Id>>},
     {type, <<"published">>},
     {client_id, <<From>>},
@@ -214,7 +214,11 @@ on_message_publish(Message, _Env) ->
     {headers, <<Headers>>},
     {cluster_node, node()},
     {ts, <<Timestamp>>}
-  ]),
+  ],
+
+    io:format("squallfeng publish msg  ~s~n", [PublishMsg]),
+
+  Json = mochijson2:encode(PublishMsg),
 
 %%  io:format("publish ~w~n", [Json]),
 
