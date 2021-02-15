@@ -99,7 +99,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
 
-  produce_kafka_payload(Json),
+  produce_kafka_payload(<<"emqx_connnected">>,Json),
   {ok, ClientInfo}.
 
 on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
@@ -114,15 +114,15 @@ on_client_connect(ConnInfo = #{clientid := ClientId}, Props, _Env) ->
 on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInfo, _Env) ->
   io:format("Client(~s) disconnected due to ~p, ClientInfo:~n~p~n, ConnInfo:~n~p~n", [ClientId, ReasonCode, ClientInfo, ConnInfo]),
 
-  Json = [
+  Json =  mochijson2:encode([
     {type, <<"disconnected">>},
     {client_id, ClientId},
     {reason, ReasonCode},
     {cluster_node, node()},
     {ts, emqx_misc:now_to_ms(os:timestamp())}
-  ],
+  ]),
 
-  produce_kafka_payload(Json),
+  produce_kafka_payload(<<"emqx_disconnnected">>,Json),
 
   ok.
 
@@ -148,9 +148,9 @@ on_client_subscribe(#{clientid := ClientId}, _Properties, TopicTable, _Env) ->
         {client_id, ClientId},
         {topic, lists:last(Key)},
         {cluster_node, node()},
-        {ts, erlang:timestamp()}
+        {ts, emqx_misc:now_to_ms(os:timestamp())}
       ]),
-      ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json));
+      produce_kafka_payload(<<"emqx_subscribe">>, Json);
     _ ->
       %% If TopicTable is empty
       io:format("empty topic ~n")
@@ -175,10 +175,10 @@ on_client_unsubscribe(#{clientid := ClientId}, _Properties, Topics, _Env) ->
     {client_id, ClientId},
     {topic, lists:last(Topics)},
     {cluster_node, node()},
-    {ts, erlang:timestamp()}
+    {ts, emqx_misc:now_to_ms(os:timestamp())}
   ]),
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
+  produce_kafka_payload(<<"unsubscribe">>, Json),
 
   {ok, Topics}.
 
@@ -192,7 +192,7 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
   {ok, Message};
 
 on_message_publish(Message, _Env) ->
-  io:format("publish ~s~n", [emqx_message:format(Message)]),
+%%  io:format("publish ~s~n", [emqx_message:format(Message)]),
 
   From = Message#message.from,
   Id = Message#message.id,
@@ -200,10 +200,10 @@ on_message_publish(Message, _Env) ->
   Payload = Message#message.payload,
   QoS = Message#message.qos,
   Flags = Message#message.flags,
-%%  Headers = Message#message.headers,
+  Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
 
-  Json = [
+  Json = mochijson2:encode([
     {id, Id},
     {type, <<"published">>},
     {client_id, From},
@@ -211,14 +211,14 @@ on_message_publish(Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {flags, Flags},
-%%    {headers, Headers},
+    {headers, Headers},
     {cluster_node, node()},
     {ts, Timestamp}
-  ],
+  ]),
 
-  io:format("publish ~w~n", [Json]),
+%%  io:format("publish ~w~n", [Json]),
 
-  produce_kafka_payload(Json),
+  produce_kafka_payload(<<"emqx_published">>,Json),
 %%  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
   {ok, Message}.
 
@@ -243,7 +243,7 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {ts, Timestamp}
   ]),
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
+  produce_kafka_payload(<<"emqx_delivered">>, Json),
 
   {ok, Message}.
 %%-----------message delivered end----------------------------------------%%
@@ -269,7 +269,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {ts, Timestamp}
   ]),
 
-  ekaf:produce_async_batched(<<"broker_message">>, list_to_binary(Json)),
+  produce_kafka_payload(<<"emqx_acked">>, Json),
   {ok, Message}.
 
 %% ===================================================================
@@ -277,10 +277,15 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 %% ===================================================================
 
 ekaf_init(_Env) ->
+  {ok, Kafka} = application:get_env(emqttd_plugin_kafka_bridge, kafka),
+  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
+  PartitionStrategy= proplists:get_value(partition_strategy, Kafka),
 
-  application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
-  application:set_env(ekaf, ekaf_bootstrap_broker, {"192.168.1.106", 9092}),
-  application:set_env(ekaf, ekaf_bootstrap_topics, "broker_message"),
+
+
+  application:set_env(ekaf, ekaf_partition_strategy, PartitionStrategy),
+  application:set_env(ekaf, ekaf_bootstrap_broker, BootstrapBroker),
+  application:set_env(ekaf, ekaf_bootstrap_topics, "emqx_broker_message"),
   %%设置数据上报间隔，ekaf默认是数据达到1000条或者5秒，触发上报
   application:set_env(ekaf, ekaf_buffer_ttl, 100),
   io:format("Init ekaf with ~s~n", ["==== TTTTTT ====="]),
@@ -335,9 +340,7 @@ ekaf_init(_Env) ->
 %%  {ok, Topic} = application:get_env(ekaf, ekaf_bootstrap_topics),
 %%  Topic.
 
-produce_kafka_payload(Message) ->
-  Topic = <<"ekaf_message">>,
-
+produce_kafka_payload(Topic,Message) ->
   io:format("squallfeng test :~w~n",[Message]),
 %%  io:format("squallfeng test binary :~w~n",list_to_binary(Message)),
 %%  io:format("squallfeng test iolist :~w~n",iolist_to_binary(Message)),
