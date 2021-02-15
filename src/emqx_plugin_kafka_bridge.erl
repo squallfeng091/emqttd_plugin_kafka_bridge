@@ -81,11 +81,11 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
 
   Json =
     mochijson2:encode([
-    {type, <<"connected">>},
-    {client_id, ClientId},
-    {msg, <<"connected OK!">>},
-    {ts, emqx_misc:now_to_ms(os:timestamp())}
-  ]),
+      {type, <<"connected">>},
+      {client_id, ClientId},
+      {msg, <<"connected OK!">>},
+      {ts, emqx_misc:now_to_ms(os:timestamp())}
+    ]),
 %%  [
 %%    {type, <<"delivered">>},
 %%    {client_id, ClientId},
@@ -199,29 +199,36 @@ on_message_publish(Message, _Env) ->
   Topic = Message#message.topic,
   Payload = Message#message.payload,
   QoS = Message#message.qos,
-  Flags = Message#message.flags,
+%%  Flags = Message#message.flags,
   Headers = Message#message.headers,
-  Timestamp = Message#message.timestamp,
+%%  Timestamp = Message#message.timestamp,
 
-  io:format("squallfeng  publish ~s~n", [Id]),
+  io:format("squallfeng  publish 1 ~w~n", [From]),
+  io:format("squallfeng  publish 2 ~w~n", [Id]),
+  io:format("squallfeng  publish 3 ~w~n", [Topic]),
+  io:format("squallfeng  publish 4 ~w~n", [Payload]),
+  io:format("squallfeng  publish 4 ~w~n", [QoS]),
+  io:format("squallfeng  publish 4 ~w~n", [Headers]),
+  io:format("squallfeng  publish 5 ~w~n", [node()]),
+  io:format("squallfeng  publish 6 ~w~n", [Headers]),
 
   PublishMsg =[
-    {id, <<Id>>},
-    {type, <<"published">>},
-    {client_id, <<From>>},
-    {topic, <<Topic>>},
-    {payload, <<Payload>>},
-    {qos, <<QoS>>},
-    {flags, <<Flags>>},
-    {headers, <<Headers>>},
-    {cluster_node, node()},
-    {ts, <<Timestamp>>}
+    {<<"id">>, Id},
+    {<<"type">>, <<"published">>},
+    {<<"client_id">>, From},
+    {<<"topic">>, Topic},
+    {<<"payload">>, Payload},
+    {<<"qos">>, QoS},
+%%    {<<"flags">>, <<Flags>>},
+    {<<"headers">>, term_to_binary(Headers)},
+    {<<"cluster_node">>, term_to_binary(node())},
+    {<<"ts">>, emqx_misc:now_to_ms(os:timestamp())}
   ],
 
-    io:format("squallfeng publish msg  ~s~n", [PublishMsg]),
+  io:format("squallfeng PublishMsg  ~w~n", [PublishMsg]),
 
   Json = mochijson2:encode(PublishMsg),
-
+  io:format("squallfeng publish msg  ~s~n", [Json]),
 %%  io:format("publish ~w~n", [Json]),
 
   produce_kafka_payload(<<"emqx_published">>,Json),
@@ -236,7 +243,8 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
   Topic = Message#message.topic,
   Payload = Message#message.payload,
   QoS = Message#message.qos,
-  Timestamp = Message#message.timestamp,
+%%  Timestamp = Message#message.timestamp,
+
 
   Json = mochijson2:encode([
     {type, <<"delivered">>},
@@ -246,7 +254,7 @@ on_message_delivered(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
     {payload, Payload},
     {qos, QoS},
     {cluster_node, node()},
-    {ts, Timestamp}
+    {ts, emqx_misc:now_to_ms(os:timestamp())}
   ]),
 
   produce_kafka_payload(<<"emqx_delivered">>, Json),
