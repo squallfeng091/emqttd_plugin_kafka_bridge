@@ -82,7 +82,7 @@ on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
   Json =
     mochijson2:encode([
     {type, <<"connected">>},
-    {client_id, <<ClientId>>},
+    {client_id, ClientId},
     {msg, <<"connected OK!">>},
     {ts, emqx_misc:now_to_ms(os:timestamp())}
   ]),
@@ -192,7 +192,7 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
   {ok, Message};
 
 on_message_publish(Message, _Env) ->
-%%  io:format("publish ~s~n", [emqx_message:format(Message)]),
+  io:format("squallfeng  publish ~s~n", [emqx_message:format(Message)]),
 
   From = Message#message.from,
   Id = Message#message.id,
@@ -202,6 +202,8 @@ on_message_publish(Message, _Env) ->
   Flags = Message#message.flags,
   Headers = Message#message.headers,
   Timestamp = Message#message.timestamp,
+
+  io:format("squallfeng  publish ~s~n", [Id]),
 
   PublishMsg =[
     {id, <<Id>>},
