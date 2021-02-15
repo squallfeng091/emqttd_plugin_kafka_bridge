@@ -204,16 +204,16 @@ on_message_publish(Message, _Env) ->
   Timestamp = Message#message.timestamp,
 
   Json = mochijson2:encode([
-    {id, Id},
+    {id, <<Id>>},
     {type, <<"published">>},
-    {client_id, From},
-    {topic, Topic},
-    {payload, Payload},
-    {qos, QoS},
-    {flags, Flags},
-    {headers, Headers},
-    {cluster_node, node()},
-    {ts, Timestamp}
+    {client_id, <<From>>},
+    {topic, <<Topic>>},
+    {payload, <<Payload>>},
+    {qos, <<QoS>>},
+    {flags, <<Flags>>},
+    {headers, <<Headers>>},
+    {cluster_node, <<node()>>},
+    {ts, <<Timestamp>>}
   ]),
 
 %%  io:format("publish ~w~n", [Json]),
