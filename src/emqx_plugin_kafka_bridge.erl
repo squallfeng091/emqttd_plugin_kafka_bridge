@@ -300,7 +300,7 @@ ekaf_init(_Env) ->
 %%  application:set_env(ekaf, ekaf_bootstrap_broker, BootstrapBroker),
 %%  application:set_env(ekaf, ekaf_bootstrap_topics, "emqx_broker_message"),
 
-  io:format("init ekaf : ~s~n",[BootstrapBroker]),
+%%  io:format("init ekaf : ~w~n",[BootstrapBroker]),
 
   application:set_env(ekaf, ekaf_partition_strategy, strict_round_robin),
   application:set_env(ekaf, ekaf_bootstrap_broker, {"10.197.92.47", 9092}),
