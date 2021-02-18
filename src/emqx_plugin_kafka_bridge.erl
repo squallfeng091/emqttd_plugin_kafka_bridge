@@ -292,7 +292,7 @@ on_message_acked(_ClientInfo = #{clientid := ClientId}, Message, _Env) ->
 
 ekaf_init(_Env) ->
 %%  {ok, Kafka} = application:get_env(emqx_plugin_kafka_bridge, kafka),
-  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
+%%  BootstrapBroker = proplists:get_value(bootstrap_broker, Kafka),
 %%  PartitionStrategy= proplists:get_value(partition_strategy, Kafka),
 %%
 %%
